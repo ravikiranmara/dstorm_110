@@ -23,7 +23,11 @@ public class ElasticityScheduler implements IScheduler {
 
 	@Override
 	public void schedule(Topologies topologies, Cluster cluster) {
-		LOG.info("\n\n\nRerunning ElasticityScheduler...");
+		LOG.info("\n\n\nRerunning ElasticityScheduler...\n");
+
+		LOG.info("calling default scheduler from Elasticity\n");
+		new org.apache.storm.scheduler.DefaultScheduler().schedule(
+			topologies, cluster);
 	}
 }
 
