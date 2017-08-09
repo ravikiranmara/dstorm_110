@@ -1,6 +1,7 @@
 package org.apache.storm.scheduler.elasticity;
 
 import org.apache.storm.scheduler.*;
+import org.apache.storm.scheduler.elasticity.MsgServer.MsgServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,10 +25,20 @@ public class ElasticityScheduler implements IScheduler {
 	@Override
 	public void schedule(Topologies topologies, Cluster cluster) {
 		LOG.info("\n\n\nRerunning ElasticityScheduler...\n");
+ 		MsgServer msgServer = MsgServer.start(GlobalConstants.MsgServerPort);
+
+		MsgServer.Signal signal = msgServer.getMessage();
+		if(signal == MsgServer.Signal.ScaleOut) {
+			LOG.info("Scale out Message Sent\n\n");
+		} else if (signal == MsgServer.Signal.ScaleIn) {
+			LOG.info("Scale In Message Sent\n\n");
+		} else {
+			LOG.info("No Signal Sent\n\n");
+		}
 
 		LOG.info("calling default scheduler from Elasticity\n");
 		new org.apache.storm.scheduler.DefaultScheduler().schedule(
-			topologies, cluster);
+ 			topologies, cluster);
 	}
 }
 

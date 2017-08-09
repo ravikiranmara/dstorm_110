@@ -12,7 +12,7 @@ import org.apache.storm.scheduler.elasticity.ElasticityScheduler;
 public class MsgServer {
 	
 	public enum Signal{
-		ScaleOut, ScaleIn
+		ScaleOut, ScaleIn, None
 	}
 	
 	Server server;
@@ -38,7 +38,7 @@ public class MsgServer {
 	public boolean isRebalance() {
 		while(this.msgQueue.isEmpty()!=true) {
 			String msg = this.msgQueue.remove();
-			if(msg.equals("REBALANCE") == true) {
+			if(msg.toUpperCase().equals("REBALANCE") == true) {
 				return true;
 			}
 		}
@@ -49,12 +49,12 @@ public class MsgServer {
 	public Signal getMessage(){
 		if(this.msgQueue.isEmpty()!=true) {
 			String msg = this.msgQueue.remove();
-			if(msg.equals("REBALANCE") == true) {
+			if(msg.toUpperCase().equals("REBALANCE") == true) {
 				return Signal.ScaleOut;
-			} else if(msg.equals("SCALEIN")) {
+			} else if(msg.toUpperCase().equals("SCALEIN")) {
 				return Signal.ScaleIn;
 			}
 		}
-		return null;
+		return Signal.None;
 	}
 }
